@@ -18,7 +18,7 @@ class CreateTicketsTable extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('content');
-            $table->dateTime('publish_at');
+            $table->dateTime('published_at')->nullable();
             $table->timestamps();
         });
     }

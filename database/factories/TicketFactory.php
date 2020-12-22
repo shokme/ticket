@@ -22,12 +22,12 @@ class TicketFactory extends Factory
      */
     public function definition()
     {
-        $title = $this->faker->words();
+        $title = implode(' ', $this->faker->words());
         return [
             'title' => $title,
             'slug' => Str::slug($title),
             'content' => $this->faker->sentence(),
-            'publish_at' => null
+            'published_at' => null
         ];
     }
 }
