@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Providers\TicketSubmitted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Log;
 
 class PublishTicket
 {
@@ -26,5 +27,6 @@ class PublishTicket
     public function handle(TicketSubmitted $event)
     {
         $event->ticket->publish();
+        Log::info('Ticket published', ['user' => 'get user_id', 'ticket_id' => $event->ticket->id]);
     }
 }
