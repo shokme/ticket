@@ -39,4 +39,62 @@ class Ticket extends TestCase
         $response->assertStatus(200)
             ->assertJsonCount(3, 'data');
     }
+
+    /** @test */
+    public function can_see_a_ticket()
+    {
+        $ticket = \App\Models\Ticket::factory()->create(['title' => 'single ticket', 'published_at' => now()]);
+
+        $response = $this->get('/api/tickets/' . $ticket->id);
+
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                'ticket' => [
+                    'title' => 'single ticket',
+                ]
+            ]);
+    }
+
+    /** @test */
+    public function cannot_see_an_unpublished_ticket()
+    {
+       $ticket = \App\Models\Ticket::withoutEvents(function () {
+            return \App\Models\Ticket::factory()->create(['published_at' => null]);
+        });
+
+        $response = $this->get('/api/tickets/' . $ticket->id);
+
+        $response->assertStatus(404);
+    }
+
+    /** @test */
+    public function can_update_a_ticket()
+    {
+        $ticket = \App\Models\Ticket::factory()->create(['title' => 'single ticket', 'content' => 'first content']);
+
+        $this->assertEquals('first content', $ticket->content);
+
+        $response = $this->patch('/api/tickets/' . $ticket->id, [
+            'content' => 'updated content'
+        ]);
+
+        $response
+            ->assertStatus(200)
+            ->assertJson(['ticket' => [
+                'content' => 'updated content'
+            ]]);
+    }
+
+    /** @test */
+    public function can_delete_a_ticket()
+    {
+        $ticket = \App\Models\Ticket::factory()->create(['title' => 'single ticket', 'content' => 'first content']);
+
+        $response = $this->delete('/api/tickets/' . $ticket->id);
+        $response->assertStatus(200);
+
+        $response = $this->get('/api/tickets/' . $ticket->id);
+        $response->assertStatus(404);
+    }
 }

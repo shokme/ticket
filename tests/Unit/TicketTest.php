@@ -7,6 +7,7 @@ use App\Notifications\TicketPublished;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Facades\Notification;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Tests\TestCase;
 
 class TicketTest extends TestCase
@@ -25,6 +26,14 @@ class TicketTest extends TestCase
         $ticket = Ticket::create(['title' => 'foo bar baz', 'content' => 'must have a generated slug']);
 
         $this->assertEquals('foo-bar-baz', $ticket->slug);
+    }
+
+    /** @test */
+    public function cannot_create_if_the_slug_already_exists()
+    {
+        $this->expectException(HttpException::class);
+        Ticket::create(['title' => 'foo bar baz', 'content' => 'must have a generated slug']);
+        Ticket::create(['title' => 'foo bar baz', 'content' => 'must not be created']);
     }
 
     /** @test */

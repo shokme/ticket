@@ -23,10 +23,17 @@ class TicketRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'title' => ['required', 'string'],
             'content' => ['required', 'min:6'],
-            'publish' => ['nullable']
         ];
+
+        if(in_array($this->method(), ['PATCH', 'PUT'])) {
+            $rules = [
+                'content' => ['required', 'min:6'],
+            ];
+        }
+
+        return $rules;
     }
 }

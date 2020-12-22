@@ -10,6 +10,7 @@ class TicketObserver
 {
     public function creating(Ticket $ticket) {
         $ticket->slug = Str::slug($ticket->title);
+        abort_if(Ticket::where('slug', $ticket->slug)->exists(), 409);
     }
 
     public function created(Ticket $ticket) {

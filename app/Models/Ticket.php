@@ -11,6 +11,8 @@ class Ticket extends Model
 
     protected $guarded = ['slug'];
 
+    const UNPUBLISHED = null;
+
     public function publish() {
         $this->published_at = now()->toDateTimeString();
         return $this->save();
